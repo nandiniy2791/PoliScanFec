@@ -3,9 +3,9 @@ name: Upload ETL Script & Trigger Job
 on:
   push:
     branches:
-      - nandini  # or 'utkarsh' or any target branch
-
-jobs:
+      - main
+      
+jobs:  
   deploy:
     runs-on: ubuntu-latest
 
@@ -18,12 +18,41 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1  # or your region
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ secrets.REGION }}
 
-      - name: Upload Glue script to S3
-        run: |
-          aws s3 cp glue_jobs/glue_script.py s3://sample1.output/sampleoutput/glue_sample_output/FEC_Data_Processing.py --region us-east-1
+      - name: Upload Glue script to S3 
+        run: | 
+          aws s3 cp etl_scripts/FEC_Data_Processing.py s3://sample1.output/glue_script/FEC_Data_Processing.py
 
-      - name: Start Glue Job
+      - name: Start Glue Job lastglue 
+        id: start_ingestion
         run: |
-          aws glue start-job-run --job-name FEC_Data_Processing --region us-east-1
+          echo "Starting Glue job: FEC_Data_Processing"
+          RUN_ID=$(aws glue start-job-run \
+            --job-name FEC_Data_Processing \
+            --query 'JobRunId' \
+            --output text)
+          echo "Glue FEC_Data_Processing started with Run ID: $RUN_ID"
+          echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
+
+      - name: Wait for lastglue to complete
+        run: |
+          echo "Waiting for FEC_Data_Processing to complete..."
+          STATUS="STARTING"
+          while [[ "$STATUS" == "STARTING" || "$STATUS" == "RUNNING" || "$STATUS" == "STOPPING" ]]; do
+            STATUS=$(aws glue get-job-run \
+              --job-name FEC_Data_Processing \
+              --run-id ${{ steps.start_ingestion.outputs.run_id }} \
+              --query 'JobRun.JobRunState' \
+              --output text)
+            echo "Current status: $STATUS"
+            sleep 30
+          done
+
+          if [[ "$STATUS" != "SUCCEEDED" ]]; then
+            echo "Ingestion job failed with status: $STATUS"
+            exit 1
+          fi
+
+          echo "Ingestion job completed successfully."
