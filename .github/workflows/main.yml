@@ -28,9 +28,9 @@ jobs:
       - name: Start Glue Job lastglue 
         id: start_ingestion
         run: |
-          echo "Starting Glue job: lastglue(1)"
+          echo "Starting Glue job: lastglue"
           RUN_ID=$(aws glue start-job-run \
-            --job-name lastglue(1) \
+            --job-name lastglue \
             --query 'JobRunId' \
             --output text)
           echo "Glue lastglue started with Run ID: $RUN_ID"
