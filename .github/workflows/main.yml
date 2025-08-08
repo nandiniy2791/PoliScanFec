@@ -23,14 +23,14 @@ jobs:
 
       - name: Upload Glue script to S3 
         run: | 
-          aws s3 cp etl_scripts/lastglue.py s3://doneeeeeeeeeeeeeeeeeeeeee/master_of_master/lastglue.py
+          aws s3 cp lastglue(1).py s3://doneeeeeeeeeeeeeeeeeeeeee/master_of_master/lastglue(1).py
 
       - name: Start Glue Job lastglue 
         id: start_ingestion
         run: |
-          echo "Starting Glue job: lastglue"
+          echo "Starting Glue job: lastglue(1)"
           RUN_ID=$(aws glue start-job-run \
-            --job-name lastglue \
+            --job-name lastglue(1) \
             --query 'JobRunId' \
             --output text)
           echo "Glue lastglue started with Run ID: $RUN_ID"
