@@ -23,7 +23,7 @@ jobs:
 
       - name: Upload Glue script to S3 
         run: | 
-          aws s3 cp etl_scripts/FEC_Data_Processing.py s3://sample1.output/glue_script/FEC_Data_Processing.py
+          aws s3 cp FEC_Data_Processing.py s3://sample1.output/glue_script/FEC_Data_Processing.py
 
       - name: Start Glue Job lastglue 
         id: start_ingestion
