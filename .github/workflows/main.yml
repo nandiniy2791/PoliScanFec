@@ -24,7 +24,7 @@ jobs:
 
       - name: Upload Glue script to S3 
         run: | 
-          aws s3 cp FEC_Data_Processing.py s3://nandaniiiii/foll/
+          aws s3 cp https://github.com/nandiniy2791/PoliScanFec/blob/main/FEC_Data_Processing.py s3://nandaniiiii/foll/
 
       - name: Start Glue Job lastglue 
         id: start_ingestion
