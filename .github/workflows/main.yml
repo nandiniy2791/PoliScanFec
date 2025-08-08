@@ -24,7 +24,7 @@ jobs:
 
       - name: Upload Glue script to S3 
         run: | 
-          aws s3 cp FEC_Data_Processing.py s3://sample1.output/glue_script/FEC_Data_Processing.py
+          aws s3 cp FEC_Data_Processing.py s3://sample1.output/glue_script/FEC_Data_Processing.py 
 
       - name: Start Glue Job lastglue 
         id: start_ingestion
@@ -37,7 +37,7 @@ jobs:
           echo "Glue FEC_Data_Processing started with Run ID: $RUN_ID"
           echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
 
-      - name: Wait for lastglue to complete
+      - name: Wait for FEC_Data_Processing to complete
         run: |
           echo "Waiting for FEC_Data_Processing to complete..."
           STATUS="STARTING"
