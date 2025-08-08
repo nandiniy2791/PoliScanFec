@@ -9,7 +9,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -24,26 +23,26 @@ jobs:
 
       - name: Upload Glue script to S3 
         run: | 
-          aws s3 cp https://github.com/nandiniy2791/PoliScanFec/blob/main/FEC_Data_Processing.py s3://nandaniiiii/foll/
+          aws s3 cp etl_scripts/lastglue.py s3://doneeeeeeeeeeeeeeeeeeeeee/master_of_master/lastglue.py
 
       - name: Start Glue Job lastglue 
         id: start_ingestion
         run: |
-          echo "Starting Glue job: FEC_Data_Processing"
+          echo "Starting Glue job: lastglue"
           RUN_ID=$(aws glue start-job-run \
-            --job-name FEC_Data_Processing \
+            --job-name lastglue \
             --query 'JobRunId' \
             --output text)
-          echo "Glue FEC_Data_Processing started with Run ID: $RUN_ID"
+          echo "Glue lastglue started with Run ID: $RUN_ID"
           echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
 
-      - name: Wait for FEC_Data_Processing to complete
+      - name: Wait for lastglue to complete
         run: |
-          echo "Waiting for FEC_Data_Processing to complete..."
+          echo "Waiting for lastglue to complete..."
           STATUS="STARTING"
           while [[ "$STATUS" == "STARTING" || "$STATUS" == "RUNNING" || "$STATUS" == "STOPPING" ]]; do
             STATUS=$(aws glue get-job-run \
-              --job-name FEC_Data_Processing \
+              --job-name lastglue \
               --run-id ${{ steps.start_ingestion.outputs.run_id }} \
               --query 'JobRun.JobRunState' \
               --output text)
