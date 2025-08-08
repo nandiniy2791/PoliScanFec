@@ -23,7 +23,7 @@ jobs:
 
       - name: Upload Glue script to S3 
         run: | 
-          aws s3 cp lastglue.py s3://doneeeeeeeeeeeeeeeeeeeeee/master_of_master/lastglue.py
+          aws s3 cp lastglue.py s3://sample1.output/glue_script/lastglue.py
 
       - name: Start Glue Job lastglue 
         id: start_ingestion
